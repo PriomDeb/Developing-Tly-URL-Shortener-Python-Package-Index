@@ -1,7 +1,6 @@
 import requests
 
 
-
 class TLY_EXCEPTION(Exception):
     def __init__(self, message="An error occurred. Contact the developer of this package mailto:priom@priomdeb.com"
                                " or the t.ly support team mailto:support@t.ly"):
@@ -26,20 +25,17 @@ class tly_shorturl:
 from the dictionary using the following keys. 
         **Keys:** 'clicks', 'unique_clicks', 'browsers', 'countries', 'referrers', \n
         'platforms', 'daily_clicks', 'data'.
-        
+
 **'data'** key itself contain another dictionary. 
 The keys of this dictionary are 'long_url', 'smart_urls', 'short_url', 'created_at', 'last_clicked',
 'total_clicks_last_thirty_days'
         """
-
-
 
         self.SHORT_URL_INFO = "Call get_short_url_info() to get information about the short link"
         """SHORT_URL_INFO is a dictionary populated with information regarding the short url. \n
         **Keys:** 'short_url', 'long_url', 'domain', 'short_id', 'expire_at_views', 
         'expire_at_datetime', 'public_stats', 'description', 'qr_code_url', 'qr_code_base64'
         """
-
 
     # Initializing with setting up the API token
     def initialize(self, api_token):
@@ -54,7 +50,6 @@ The keys of this dictionary are 'long_url', 'smart_urls', 'short_url', 'created_
         if long_url == "":
             raise TLY_EXCEPTION("create_short_url(long_url='?') No valid url is passed in the method!")
 
-
         url = 'https://t.ly/api/v1/link/shorten'
         payload = {
             "long_url": long_url,
@@ -64,7 +59,6 @@ The keys of this dictionary are 'long_url', 'smart_urls', 'short_url', 'created_
         params = {
             'api_token': self.__MY_API_TOKEN,
         }
-
 
         response = requests.request('POST', url, headers=self.headers, json=payload, params=params)
         return response.json()['short_url']
@@ -135,7 +129,6 @@ The keys of this dictionary are 'long_url', 'smart_urls', 'short_url', 'created_
         :returns updated/edited url info
         """
 
-
         url = 'https://t.ly/api/v1/link'
         payload = {
             "short_url": current_short_url,
@@ -155,7 +148,12 @@ The keys of this dictionary are 'long_url', 'smart_urls', 'short_url', 'created_
         response = requests.request('PUT', url, headers=self.headers, json=payload, params=params)
         return response.json()
 
+    # Delete existing short url
     def delete_short_url(self, short_url):
+        """This method will delete your existing short url. \n
+        :return None
+        """
+
         url = 'https://t.ly/api/v1/link'
         payload = {
             "short_url": short_url
@@ -167,7 +165,12 @@ The keys of this dictionary are 'long_url', 'smart_urls', 'short_url', 'created_
         response = requests.request('DELETE', url, headers=self.headers, json=payload, params=params)
         return
 
+    # Return the original long url and expiration status
     def expand(self, short_url, password=""):
+        """This method returns the original long url and expiration status \n
+        :return tuple(long_url, expired)
+        """
+
         url = 'https://t.ly/api/v1/link/expand'
         payload = {
             "short_url": short_url,
@@ -182,11 +185,9 @@ The keys of this dictionary are 'long_url', 'smart_urls', 'short_url', 'created_
         return response.json()['long_url'], response.json()['expired']
 
 
-
 user_api_token = ""
 user_long_url = "https://peps.python.org/pep-0440/#pre-release-separators"
 user_short_url = "https://t.ly/Co5Y"
-
 
 short = tly_shorturl()
 short.initialize(user_api_token)
